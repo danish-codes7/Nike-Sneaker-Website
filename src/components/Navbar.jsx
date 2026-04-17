@@ -1,8 +1,26 @@
-import React from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/all";
+import React, { useRef } from "react";
 
-const Navbar = () => {
+const Navbar = ({ isLoaded }) => {
+
+  const navref = useRef(null)
+
+  gsap.registerPlugin(ScrollTrigger)
+
+  useGSAP(()=>{
+    if(!isLoaded) return;
+
+    gsap.from(navref.current,{
+      y:-100,
+      duration:0.8,
+      opacity:0,
+    })
+  },[isLoaded])
+
   return (
-    <div className="w-full flex items-center justify-between px-10">
+    <div ref={navref} className="w-full flex items-center justify-between px-10">
       
       {/* Logo */}
       <div className="logo">

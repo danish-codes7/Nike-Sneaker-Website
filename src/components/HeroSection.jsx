@@ -1,34 +1,130 @@
-import React, { useState } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import React, { useRef, useState } from "react";
 
 const HeroSection = ({ isLoaded }) => {
+
+  const containerRef = useRef(null);
+ 
+const leftRef = useRef(null);
+const rightRef = useRef(null);
+const shoeRef = useRef(null);
+const titleRef = useRef(null);
+const subtitleRef = useRef(null);
+const descRef = useRef(null);
+const badgesRef = useRef(null);
+
   // 🔹 State to track current active shoe index
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  useGSAP(()=>{
+    if(!isLoaded) return;
+
+    const tl = gsap.timeline();
+
+    // Title animates down with fade
+    tl.from(titleRef.current,{
+      y:-30,
+      opacity:0,
+      duration:0.7,
+      ease:"power3.out"
+    }, 0);
+
+    // Subtitle slides in from bottom with fade
+    tl.from(subtitleRef.current,{
+      y:20,
+      opacity:0,
+      duration:0.6,
+      ease:"power3.out"
+    }, 0.2);
+
+    // Description text fades in with a subtle slide
+    tl.from(descRef.current,{
+      y:15,
+      opacity:0,
+      duration:0.6,
+      ease:"power3.out"
+    }, 0.35);
+
+    // Badges animate in with a stagger effect
+    tl.from(badgesRef.current?.querySelectorAll("span"), {
+      y:10,
+      opacity:0,
+      duration:0.5,
+      stagger:0.1,
+      ease:"power2.out"
+    }, 0.45);
+
+    // Left content animates in from left with fade
+    tl.from(leftRef.current,{
+      x:-60,
+      opacity:0,
+      duration:0.8,
+      ease:"power3.out"
+    }, 0);
+
+    // Right content animates in from right with fade (slightly delayed)
+    tl.from(rightRef.current,{
+      x:80,
+      opacity:0,
+      duration:0.8,
+      ease:"power3.out"
+    }, 0.2);
+
+    // Shoe animates in with scale and rotation effect
+    tl.from(shoeRef.current,{
+      x:800,
+      opacity:0,
+      scale:0.8,
+      rotation:15,
+      duration:1.2,
+      ease:"back.out(1.2)"
+    }, 0.3);
+
+    // Add a subtle floating animation to the shoe after it lands
+    gsap.to(shoeRef.current, {
+      y: -15,
+      duration: 3,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+      delay: 1.5
+    });
+
+   
+  },[isLoaded])
+
   // 🔹 All shoe data (acts like a mini database for UI)
   const shoes = [
-    {
-      name: "Air Jordan 18",
-      color: "Green",
-      image: "/images/Background.png",
-      bg: "from-[#a8ff00] via-[#3a7d2c] to-[#041b12]",
-      price: "$199",
-    },
-    {
-      name: "Air DT Max '96",
-      color: "Red",
-      rotate: "40deg",
-      image: "/images/shoes3.2.png",
-      bg: "from-[#ff4d4d] via-[#c1121f] to-[#2b0000]",
-      price: "$219",
-    },
     {
       name: "Air More Uptempo",
       color: "Black",
       image: "/images/shoes4.2.png",
       bg: "from-[#2b2b2b] via-[#121212] to-[#000000]",
       price: "$229",
+      rotate: "-20deg",
+      scale: 0.95,
     },
-  ];
+    {
+      name: "Air Jordan 18",
+      color: "Green",
+      image: "/images/Background.png",
+      bg: "from-[#a8ff00] via-[#3a7d2c] to-[#041b12]",
+      price: "$199",
+      rotate: "20deg", // already rotated PNG
+      translateY: "60px",
+      scale: 1.1,
+    },
+    {
+      name: "Air DT Max '96",
+      color: "Red",
+      image: "/images/shoes3.2.png",
+      bg: "from-[#ff4d4d] via-[#c1121f] to-[#2b0000]",
+      price: "$219",
+      rotate: "-20deg",
+      scale:0.85,
+    },
+];
 
   // 🔹 Move to next shoe (loop enabled)
   const nextSlide = () => {
@@ -45,6 +141,7 @@ const HeroSection = ({ isLoaded }) => {
   return (
     <div
       // 🔹 Dynamic background based on active shoe
+      ref={containerRef} 
       className={`w-full h-screen bg-gradient-to-br ${shoes[currentIndex].bg} ${
       isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
     } transition-colors duration-700 relative flex items-center justify-between px-10 overflow-hidden`}
@@ -52,28 +149,29 @@ const HeroSection = ({ isLoaded }) => {
       
       {/* ================= LEFT CONTENT ================= */}
       
-      <div className="max-w-[480px] z-10 mt-20">
-        <h1 className="text-[64px] font-extrabold text-white leading-[1.1] tracking-[-1.5px]">
+      <div ref={leftRef}   className="max-w-[480px] z-10 mt-20">
+        <h1 ref={titleRef} className="text-[64px] font-extrabold text-white leading-[1.1] tracking-[-1.5px]">
           Elevate every<br />
           <span className="text-transparent" style={{ WebkitTextStroke: "1px rgba(255,255,255,0.5)" }}>step</span> you take.
         </h1>
 
-        <h2 className="text-3xl font-bold tracking-[8px] uppercase text-white mt-12">
+        <h2 ref={subtitleRef} className="text-3xl font-bold tracking-[8px] uppercase text-white mt-12">
           {shoes[currentIndex].name}
         </h2> 
         <div className="h-[2px] w-82 mt-3" style={{ background: "linear-gradient(to right, #fff, transparent)" }} />
+
 
         <div className="h-full w-full pt-45">
 
        
 
-        <p className="w-[420px] text-white/85 text-[14px] leading-[1.8] mt-7">
+        <p ref={descRef} className="w-[420px] text-white/85 text-[14px] leading-[1.8] mt-7">
           The Air Jordan 18 is one of the most refined and luxurious sneakers in the Jordan lineup, designed to reflect the final chapter of Michael Jordan's legendary NBA career.
         </p>
 
         
 
-        <div className="flex gap-3 mt-8">
+        <div ref={badgesRef} className="flex gap-3 mt-8">
           <span className="py-2 px-4 border border-white/60 rounded-full text-white/80 text-[11px] tracking-[1.5px] uppercase font-semibold">
             Premium
           </span>
@@ -82,10 +180,12 @@ const HeroSection = ({ isLoaded }) => {
           </span> 
         </div>
          </div>
-      </div>
+
+               </div>
+
 
       {/* ================= SHOES SLIDER ================= */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] flex items-center justify-center">
+      <div ref={shoeRef} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] flex items-center justify-center">
         
         {/* Loop through all shoes */}
         {shoes.map((shoe, index) => {
@@ -107,22 +207,21 @@ const HeroSection = ({ isLoaded }) => {
 
           return (
             <img
-              key={index}
-              src={shoe.image}
-              alt={shoe.color}
-
-              // 🔹 Combined animation: position + rotation + scale
-              className={`absolute w-[clamp(400px,45vw,650px)] transition-all duration-700 ease-in-out ${position} ${
-                index === currentIndex
-                  ? "rotate-0 scale-100 opacity-100"
-                  : "rotate-[-18deg] scale-90 opacity-0"
-              }`}
-
-              // 🔹 Soft shadow for depth
-              style={{
-                filter: "drop-shadow(0 30px 80px rgba(0,0,0,0.6))",
-              }}
-            />
+           
+  key={index}
+  src={shoe.image}
+  alt={shoe.color}
+  className={`absolute w-[clamp(300px,35vw,650px)] transition-all duration-700 ease-in-out ${position}`}
+  style={{
+    transform: `
+      rotate(${shoe.rotate})
+      translateY(${shoe.translateY})
+      scale(${shoe.scale})
+    `,
+    opacity: index === currentIndex ? 1 : 0,
+    filter: "drop-shadow(0 30px 80px rgba(0,0,0,0.6))",
+  }}
+/>
           );
         })}
 
@@ -159,7 +258,7 @@ const HeroSection = ({ isLoaded }) => {
       </div>
 
       {/* ================= RIGHT CONTENT ================= */}
-      <div className="flex flex-col gap-8 items-end z-10">
+      <div ref={rightRef}  className="flex flex-col gap-8 items-end z-10">
 
          {/* Size Selection */}
         <div className="backdrop-blur-md border mt-10 border-white/20 rounded-2xl p-6">
@@ -223,7 +322,9 @@ const HeroSection = ({ isLoaded }) => {
         <i className="ri-arrow-right-s-line"></i>
       </button>
     </div>
-  );
-};
+  )};
 
 export default HeroSection;
+
+
+
