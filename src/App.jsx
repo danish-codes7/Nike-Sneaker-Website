@@ -3,6 +3,7 @@ import HeroSection from "./components/HeroSection";
 import Navbar from "./components/Navbar";
 import Loader from "./components/Loader";
 import ShoesDetails from "./components/ShoesDetails";
+import Footer from "./components/Footer";
 
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -21,6 +22,7 @@ const App = () => {
         {/* Hero Section - Background */}
         <HeroSection isLoaded={!loading} />
         <ShoesDetails/>
+        <Footer/>
       </div>
     </>
   );

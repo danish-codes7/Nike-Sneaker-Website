@@ -1,8 +1,1 @@
 @import "tailwindcss";
-
-.active-size {
-  background: white !important;
-  color: black !important;
-  border-color: white !important;
-  font-weight: 700 !important;
-}
